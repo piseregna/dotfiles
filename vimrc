@@ -72,6 +72,7 @@ set sidescrolloff=3
 
 set ruler
 set wildmenu
+set wildmode=longest,list,full
 
 """""""""""""""""""""" Others """"""""""""""""""""""""
 
@@ -82,6 +83,7 @@ set shiftwidth=2
 set softtabstop=2
 set expandtab
 set autoindent
+set smartindent
 set backspace=indent,eol,start " Bring backspace to life
 set number relativenumber
 set nocompatible
@@ -89,6 +91,7 @@ set laststatus=2
 set noshowmode
 set ruler
 set ignorecase
+set smartcase
 set hlsearch
 set incsearch
 "filetype plugin indent on
@@ -104,6 +107,14 @@ set cursorline
 set nobackup 	                              " no backup files
 set nowritebackup                           " only in case you don't want a backup file while editing
 set noswapfile 	                            " no swap files
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
 
 "set list
 "set listchars+=tab:┊\ 
@@ -126,6 +137,17 @@ nnoremap <leader>p "+p
 nnoremap <leader>P "+P
 vnoremap <leader>y "+y
 vnoremap <leader>Y "+Y
+
+
+" Smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Remap VIM 0 to first non-blank character
+map 0 ^
+
 "=====================================================
 "" Functions
 "=====================================================
@@ -135,6 +157,9 @@ fun! TrimWhitespace()
     call winrestview(l:save)
 endfun
 
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 "=====================================================
 "" Aliasses
 "=====================================================

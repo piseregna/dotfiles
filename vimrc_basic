@@ -1,0 +1,168 @@
+"colorscheme desert
+
+" Wildmenu - Improved tabbing through : commands
+set wildmenu
+set wildmode=longest:full,full
+
+set scrolloff=3
+set sidescrolloff=3
+
+
+set t_Co=256                " 256 color mode
+set encoding=utf-8          " always use utf-8
+" Better color support
+if (has("termguicolors"))
+  set termguicolors
+endif
+
+set history=1000
+
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
+set autoindent
+filetype plugin indent on
+
+set ruler
+set backspace=indent,eol,start " Bring backspace to life
+set number
+set relativenumber
+set nocompatible
+set noshowmode
+
+syntax enable
+set ignorecase
+set smartcase
+set hlsearch
+set hlsearch
+set incsearch
+
+set hidden
+set cursorline
+set splitbelow
+set splitright
+
+" status bar colors
+au InsertEnter * hi statusline guifg=black guibg=#d7afff ctermfg=black ctermbg=magenta
+au InsertLeave * hi statusline guifg=black guibg=#8fbfdc ctermfg=black ctermbg=cyan
+hi statusline guifg=black guibg=#8fbfdc ctermfg=black ctermbg=cyan
+
+" Status line
+" default: set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
+
+" Status Line Custom
+let g:currentmode={
+    \ 'n'  : 'Normal',
+    \ 'no' : 'Normal·Operator Pending',
+    \ 'v'  : 'Visual',
+    \ 'V'  : 'V·Line',
+    \ '^V' : 'V·Block',
+    \ 's'  : 'Select',
+    \ 'S'  : 'S·Line',
+    \ '^S' : 'S·Block',
+    \ 'i'  : 'Insert',
+    \ 'R'  : 'Replace',
+    \ 'Rv' : 'V·Replace',
+    \ 'c'  : 'Command',
+    \ 'cv' : 'Vim Ex',
+    \ 'ce' : 'Ex',
+    \ 'r'  : 'Prompt',
+    \ 'rm' : 'More',
+    \ 'r?' : 'Confirm',
+    \ '!'  : 'Shell',
+    \ 't'  : 'Terminal'
+    \}
+
+set laststatus=2
+set noshowmode
+set statusline=
+set statusline+=%0*\ %n\                                 " Buffer number
+set statusline+=%0*\ %{toupper(g:currentmode[mode()])}\  " The current mode
+set statusline+=%1*\ %<%F%m%r%h%w\                       " File path, modified, readonly, helpfile, preview
+set statusline+=%3*│                                     " Separator
+set statusline+=%2*\ %Y\                                 " FileType
+set statusline+=%3*│                                     " Separator
+set statusline+=%2*\ %{''.(&fenc!=''?&fenc:&enc).''}     " Encoding
+set statusline+=\ (%{&ff})                               " FileFormat (dos/unix..)
+set statusline+=%=                                       " Right Side
+set statusline+=%2*\ col:\ %02v\                         " Colomn number
+set statusline+=%3*│                                     " Separator
+set statusline+=%1*\ ln:\ %02l/%L\ (%3p%%)\              " Line number / total lines, percentage of document
+
+hi User1 ctermfg=007 ctermbg=239 guibg=#4e4e4e guifg=#adadad
+hi User2 ctermfg=007 ctermbg=236 guibg=#303030 guifg=#adadad
+hi User3 ctermfg=236 ctermbg=236 guibg=#303030 guifg=#303030
+hi User4 ctermfg=239 ctermbg=239 guibg=#4e4e4e guifg=#4e4e4e
+
+" Better Netrw
+let g:netrw_banner = 0
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_liststyle = 3
+
+if &columns < 90
+  let g:netrw_winsize = 50 " If the screen is small, occupy half
+else
+  let g:netrw_winsize = 30 " else take 30%
+endif
+
+let g:netrw_keepdir = 0 " Sync current directory and browsing directory. This solves the problem with the 'move' command
+
+"=====================================================
+"" Keyboard Shortcut
+"=====================================================
+" Apre Netrw
+map <leader>d :Lexplore<CR>
+
+" Modifica i registri in blocco, carattere e linea
+map <A-b> :call setreg('*',@*,'b')<CR>
+map <A-c> :call setreg('*',@*,'c')<CR>
+map <A-l> :call setreg('*',@*,'l')<CR>
+
+" Copia e incolla dalla clipboard
+nnoremap gp "*p
+nnoremap gP "*P
+vnoremap gy "*y
+vnoremap gY "*Y
+
+" Incolla senza perdere quanto incollato dal registro
+nnoremap <leader>p "_p
+nnoremap <leader>P "_P
+
+" Seleziona tutto
+nnoremap <leader>a ggVG
+
+" Muoversi tra le finestre
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Resize delle finestre splittate
+noremap <silent> <C-S-Left> :vertical resize +5<CR>
+noremap <silent> <C-S-Right> :vertical resize -5<CR>
+
+" Usa il selezionato come primo termine per la sostituzione
+vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
+
+" Muoversi tra i buffer
+nnoremap <tab> :bn<CR>
+nnoremap <S-tab> :bn<CR>
+
+
+"=====================================================
+" Functions
+"=====================================================
+fun! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+
+"=====================================================
+"" Aliasses
+"=====================================================
+command Rmblank g/^$/d
+command! Trim call TrimWhitespace()
+

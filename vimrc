@@ -12,24 +12,33 @@
 "" Plug settings
 "=====================================================
 
-call plug#begin('~/.vim/plugged')
-    Plug 'preservim/nerdtree'
-    Plug 'frazrepo/vim-rainbow'
-    Plug 'tpope/vim-surround'
-    Plug 'nathanaelkane/vim-indent-guides'
+call plug#begin('~/vimfiles/plugged')
 
+"Plug 'preservim/nerdtree'
+"Plug 'mileszs/ack.vim'
+Plug 'frazrepo/vim-rainbow'
+Plug 'morhetz/gruvbox'
+Plug 'arcticicestudio/nord-vim'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+Plug 'altercation/vim-colors-solarized'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'godlygeek/tabular'
 
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'nathanaelkane/vim-indent-guides'
 
-    Plug 'morhetz/gruvbox'
-    Plug 'nordtheme/vim'
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-    
-"    Plug 'ctrlpvim/ctrlp.vim '
-    
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
+"Plug 'xolox/vim-misc'
+"Plug 'xolox/vim-session'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+"Plug 'thaerkh/vim-workspace'
+Plug 'tpope/vim-obsession'
+Plug 'dhruvasagar/vim-prosession'
+
 call plug#end()
+
 
 "=====================================================
 "" General settings
@@ -37,7 +46,7 @@ call plug#end()
 
 """""""""""""""" Powerline Settings """"""""""""""""""
 
-"set guifont=DejaVu\ Sans\ Mono\ for\ Powerline
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline 
 let g:Powerline_symbols = 'fancy'
 set encoding=utf-8
 set t_Co=256
@@ -72,8 +81,7 @@ set sidescrolloff=3
 
 set ruler
 set wildmenu
-set wildmode=longest,list,full
-
+"
 """""""""""""""""""""" Others """"""""""""""""""""""""
 
 set history=1000
@@ -83,19 +91,21 @@ set shiftwidth=2
 set softtabstop=2
 set expandtab
 set autoindent
-set smartindent
 set backspace=indent,eol,start " Bring backspace to life
 set number relativenumber
 set nocompatible
 set laststatus=2
 set noshowmode
-set ruler
 set ignorecase
 set smartcase
 set hlsearch
+set hlsearch
 set incsearch
-"filetype plugin indent on
-"folding settings
+filetype plugin indent on
+set hidden
+
+"set clipboard=unnamedplus                   " utilizzo la clipboard dell'OS
+
 set foldmethod=indent   "fold based on indent
 set foldnestmax=10      "deepest fold is 10 levels
 set nofoldenable        "dont fold by default
@@ -108,48 +118,73 @@ set nobackup 	                              " no backup files
 set nowritebackup                           " only in case you don't want a backup file while editing
 set noswapfile 	                            " no swap files
 
-" Ignore compiled files
-set wildignore=*.o,*~,*.pyc
-if has("win16") || has("win32")
-    set wildignore+=.git\*,.hg\*,.svn\*
-else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
-endif
+set splitbelow                              " di degault la finestra splittata sta di sotto
+set splitright                              " di degault la finestra splittata sta di a destra
 
 "set list
 "set listchars+=tab:┊\ 
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_start_level=2
 let g:indent_guides_guide_size=1
-"let g:indent_guides_auto_colors = 0
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
+
+" Better Netrw
+let g:netrw_banner = 0 
+let g:netrw_browse_split = 4 
+let g:netrw_altv = 1 
+let g:netrw_liststyle = 3 
+
+if &columns < 90
+  let g:netrw_winsize = 50 " If the screen is small, occupy half
+else
+  let g:netrw_winsize = 30 " else take 30%
+endif
+
+let g:netrw_keepdir = 0 " Sync current directory and browsing directory. This solves the problem with the 'move' command
+"
 "=====================================================
 "" Keyboard Shortcut
 "=====================================================
+" Apre Netrw
+map <leader>d :Lexplore<CR>
 
-map <C-d> :NERDTreeToggle<CR>
+" Modifica i registri in blocco, carattere e linea 
 map <A-b> :call setreg('*',@*,'b')<CR>
 map <A-c> :call setreg('*',@*,'c')<CR>
 map <A-l> :call setreg('*',@*,'l')<CR>
 
-nnoremap <leader>p "+p
-nnoremap <leader>P "+P
-vnoremap <leader>y "+y
-vnoremap <leader>Y "+Y
+" Copia e incolla dalla clipboard
+nnoremap gp "*p
+nnoremap gP "*P
+vnoremap gy "*y
+vnoremap gY "*Y
 
+" Incolla senza perdere quanto incollato dal registro
+nnoremap <leader>p "_p
+nnoremap <leader>P "_P
 
-" Smart way to move between windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+" Seleziona tutto
+nnoremap <leader>a ggVG
 
-" Remap VIM 0 to first non-blank character
-map 0 ^
+" Muoversi tra le finestre
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l 
+
+" Resize delle finestre splittate
+noremap <silent> <C-S-Left> :vertical resize +5<CR>
+noremap <silent> <C-S-Right> :vertical resize -5<CR>
+
+" Usa il selezionato come primo termine per la sostituzione
+vnoremap <C-r> "hy:%s/<C-r>h//g<left><left> 
+
+" Muoversi tra i buffer
+nnoremap <tab> :bn<CR>
+nnoremap <S-tab> :bp<CR>
+
 
 "=====================================================
-"" Functions
+" Functions
 "=====================================================
 fun! TrimWhitespace()
     let l:save = winsaveview()
@@ -157,14 +192,12 @@ fun! TrimWhitespace()
     call winrestview(l:save)
 endfun
 
-" :W sudo saves the file
-" (useful for handling the permission-denied error)
-command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 "=====================================================
 "" Aliasses
 "=====================================================
 command Rmblank g/^$/d
 command! Trim call TrimWhitespace()
+
 
 "=====================================================
 "" Inital window size
@@ -172,23 +205,13 @@ command! Trim call TrimWhitespace()
 if has("gui_running")
   " GUI is running or is about to start.
   " Maximize gvim window (for an alternative on Windows, see simalt below).
-  set lines=32 columns=120
+  set lines=42 columns=240
 endif
+
 
 "=====================================================
 "" Da fare
 "=====================================================
 "Scroll orizzontale
-"Mouversi tra i buffer <--Proprio da capire
 
 
-"=====================================================
-"" CtrlP con Ag
-"=====================================================
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-endif

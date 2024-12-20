@@ -10,9 +10,12 @@ local nvim_data
 
 if vim.fn.has("win64") == 1 then
 		java_17_path = 'C:/Program Files/OpenLogic/jdk-17.0.13.11-hotspot'
+    java_8_path = 'C:/Program Files/Java/jdk1.8.0_202'
 		configuration_os = 'config_win'
+		nvim_data = 'C:/Users/vincelli/AppData/Local/nvim-data/'
 elseif vim.fn.has("unix") == 1 then
 		java_17_path = '/usr/lib/jvm/java-17-openjdk-amd64'
+    java_8_path = '/usr/lib/jvm/java-8-openjdk-amd64'
 		configuration_os = 'config_linux'
 		nvim_data = '/home/piseregna/.local/share/nvim/'
 else
@@ -105,7 +108,7 @@ local config = {
 					},
 					{
 						name = "JavaSE-1.8",
-						path = "/usr/lib/jvm/java-8-openjdk-amd64",
+						path = java_8_path,
 					},
 					-- {
 					-- 	name = "JavaSE-8",

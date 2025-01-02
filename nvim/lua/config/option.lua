@@ -33,7 +33,7 @@ vim.opt.signcolumn = "yes"                             -- always show the sign c
 vim.opt.wrap = false                                   -- display lines as one long line
 vim.opt.scrolloff = 8                                  -- minimal number of screen lines to keep above and below the cursor
 vim.opt.sidescrolloff = 8                              -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
-vim.opt.guifont = "Hack Nerd Font Mono:h12"            -- the font used in graphical neovim applications
+vim.opt.guifont = "Mononoki Nerd Font Mono"            -- the font used in graphical neovim applications
 vim.opt.shortmess:append "c"                           -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
 vim.opt.whichwrap:append("<,>,[,],h,l")                -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 vim.opt.iskeyword:append("-")                          -- treats words with `-` as single words
@@ -53,19 +53,19 @@ vim.opt.fillchars = {
 }
 vim.cmd[[colorscheme catppuccin]]
 -- Predefine clipboard provider to speedup start
-    vim.g.clipboard = {
-      name = "wl-clipboard (wsl)",
-      copy = {
-        ["+"] = "wl-copy --foreground --type text/plain",
-        ["*"] = "wl-copy --foreground --primary --type text/plain",
-      },
-      paste = {
-        ["+"] = function()
-          return vim.fn.systemlist('wl-paste --no-newline|sed -e "s/\r$//"', { "" }, 1) -- '1' keeps empty lines
-        end,
-        ["*"] = function()
-          return vim.fn.systemlist('wl-paste --primary --no-newline|sed -e "s/\r$//"', { "" }, 1)
-        end,
-      },
-      cache_enabled = true,
-    }
+--     vim.g.clipboard = {
+--       name = "wl-clipboard (wsl)",
+--       copy = {
+--         ["+"] = "wl-copy --foreground --type text/plain",
+--         ["*"] = "wl-copy --foreground --primary --type text/plain",
+--       },
+--       paste = {
+--         ["+"] = function()
+--           return vim.fn.systemlist('wl-paste --no-newline|sed -e "s/\r$//"', { "" }, 1) -- '1' keeps empty lines
+--         end,
+--         ["*"] = function()
+--           return vim.fn.systemlist('wl-paste --primary --no-newline|sed -e "s/\r$//"', { "" }, 1)
+--         end,
+--       },
+--       cache_enabled = true,
+--     }

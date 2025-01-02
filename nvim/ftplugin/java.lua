@@ -3,7 +3,6 @@ local jdtls = require('jdtls')
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = vim.env.HOME .. '/jdtls-workspace/' .. project_name .. '_workjdtld'
 
--- 운영 체제에 따라 변수 설정
 local java_17_path
 local configuration_os
 local nvim_data
@@ -12,12 +11,12 @@ if vim.fn.has("win64") == 1 then
 		java_17_path = 'C:/Program Files/OpenLogic/jdk-17.0.13.11-hotspot'
     java_8_path = 'C:/Program Files/Java/jdk1.8.0_202'
 		configuration_os = 'config_win'
-		nvim_data = 'C:/Users/vincelli/AppData/Local/nvim-data/'
+		nvim_data = vim.env.HOME .. '/AppData/Local/nvim-data/'
 elseif vim.fn.has("unix") == 1 then
 		java_17_path = '/usr/lib/jvm/java-17-openjdk-amd64'
     java_8_path = '/usr/lib/jvm/java-8-openjdk-amd64'
 		configuration_os = 'config_linux'
-		nvim_data = '/home/piseregna/.local/share/nvim/'
+		nvim_data = vim.env.HOME .. '/.local/share/nvim/'
 else
 	-- Others
 	java_17_path = 'error; find this log in ~/.config/nvim/ftplugin/java.lua'
@@ -89,10 +88,14 @@ local config = {
 	settings = {
 		java = {
 			home = project_config.java_home,
+			-- home = "C:/Program Files/RedHat/java-1.8.0-openjdk-1.8.0.282-1",
       project = {
-        outputPath = project_config.output_dir,
-        sourcePaths = { project_config.source_dir },
-				referencedLibraries = vim.split(vim.fn.glob(project_config.referenced_libraries[1], 1), "\n"),
+      outputPath = project_config.output_dir,
+      --   outputPath = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/webapps/WEB-INF/classes",
+      sourcePaths = project_config.source_dir,
+      --   sourcePaths = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/src",
+			referencedLibraries = vim.split(vim.fn.glob(project_config.referenced_libraries[1], 1), "\n"),
+			-- 	referencedLibraries = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/webapps/WEB-INF/lib/*.jar"
       },
 			eclipse = {
 				downloadSources = true,

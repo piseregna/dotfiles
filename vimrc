@@ -83,7 +83,6 @@ set ruler
 set wildmenu
 "
 """""""""""""""""""""" Others """"""""""""""""""""""""
-
 set history=1000
 syntax enable
 set tabstop=2

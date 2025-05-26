@@ -113,9 +113,15 @@ return {
 
 		end
 
+		local mason_lspconfig = require("mason-lspconfig")
+
+	-- Setup deve essere chiamato prima di usare setup_handlers
+	mason_lspconfig.setup({
+		ensure_installed = lsp_install_list
+	})
 
 		-- Call setup on each LSP server
-		require('mason-lspconfig').setup_handlers({
+		mason_lspconfig.setup_handlers({
 			function(server_name)
 				-- Don't call setup for JDTLS Java LSP because it will be setup from a separate config
 				if server_name ~= 'jdtls' then

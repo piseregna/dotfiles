@@ -13,6 +13,9 @@ return {
       server = {
         workDir = vim.fn.expand("~/.cache/lemminx"), -- espande ~ correttamente
       },
+      catalogs = {
+        vim.fn.expand("~/.lemminx/catalog.xml"),
+      },
     },
   },
   single_file_support = true,

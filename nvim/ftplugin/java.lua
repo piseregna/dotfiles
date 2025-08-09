@@ -3,7 +3,9 @@ local jdtls = require('jdtls')
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = vim.env.HOME .. '/jdtls-workspace/' .. project_name .. '_workjdtld'
 
+local java_21_path
 local java_17_path
+local java_8_path
 local configuration_os
 local nvim_data
 
@@ -13,6 +15,7 @@ if vim.fn.has("win64") == 1 then
 		configuration_os = 'config_win'
 		nvim_data = vim.env.HOME .. '/AppData/Local/nvim-data/'
 elseif vim.fn.has("unix") == 1 then
+		java_21_path = '/usr/lib/jvm/java-21-openjdk-amd64'
 		java_17_path = '/usr/lib/jvm/java-17-openjdk-amd64'
     java_8_path = '/usr/lib/jvm/java-8-openjdk-amd64'
 		configuration_os = 'config_linux'
@@ -23,43 +26,11 @@ else
 	configuration_os = 'error; find this log in ~/.config/nvim/ftplugin/java.lua'
 end
 
--- Needed for debugging
---local bundles = {
---	vim.fn.glob(vim.env.HOME .. '/.local/share/nvim/mason/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar'),
---}
-
--- Needed for running/debugging unit tests
---vim.list_extend(bundles,
---	vim.split(vim.fn.glob(vim.env.HOME .. "/.local/share/nvim/mason/share/java-test/*.jar", 1), "\n"))
-
--- Funzione per caricare il file di configurazione del singolo progetto
--- deve essere creto il file jdtls_config.lua con le impostazioni del progetto, altrimenti usera le impostazioni di default
-local function load_project_config()
-  local config_path = vim.fn.getcwd() .. "/jdtls_config.lua"
-  local config = {}
-
-  if vim.fn.filereadable(config_path) == 1 then
-    config = dofile(config_path)
-  else
-    config = {
-      java_home = "/usr/lib/jvm/java-17-openjdk-amd64",
-      output_dir = "./bin",
-      source_dir = "./src",
-      referenced_libraries = {},
-    }
-  end
-
-  return config
-end
-
-local project_config = load_project_config()
-
--- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
 local config = {
 	-- The command that starts the language server
 	-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
 	cmd = {
-		java_17_path ..'/bin/java',
+		java_21_path ..'/bin/java',
 		'-Declipse.application=org.eclipse.jdt.ls.core.id1',
 		'-Dosgi.bundles.defaultStartLevel=4',
 		'-Declipse.product=org.eclipse.jdt.ls.core.product',
@@ -67,9 +38,9 @@ local config = {
 		'-Dlog.level=ALL',
 		'-javaagent:' .. nvim_data .. 'mason/share/jdtls/lombok.jar',
 		'-Xmx4g',
---		'--add-modules=ALL-SYSTEM,jdk.incubator.foreign,jdk.incubator.vector',
---    '--add-opens=java.base/jdk.internal.loader=ALL-UNNAMED,java.base/java.util=ALL-UNNAMED, java.base/java.lang=ALL-UNNAMED',
-
+    '--add-modules=ALL-SYSTEM',
+    '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+    '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
 		-- Eclipse jdtls location
 		'-jar', nvim_data .. 'mason/share/jdtls/plugins/org.eclipse.equinox.launcher.jar',
 		-- TODO Update this to point to the correct jdtls subdirectory for your OS (config_linux, config_mac, config_win, etc)
@@ -79,7 +50,7 @@ local config = {
 
 	-- This is the default if not provided, you can remove it. Or adjust as needed.
 	-- One dedicated LSP server & client will be started per unique root_dir
-	root_dir = require('jdtls.setup').find_root({ '.git', 'mvnw', 'pom.xml', 'build.gradle', 'build.xml', '.svn', 'src' }),
+	root_dir = require('jdtls.setup').find_root({ '.git', 'mvnw', 'pom.xml', 'build.gradle', 'build.xml', '.svn', 'src' , '.project' }),
 
 -- Caching dei workspace: Il valore di workspace_folder viene generato automaticamente in base al nome del progetto. Questo evita conflitti tra progetti con lo stesso nome.
 	workspace_folder = vim.fn.stdpath('data') .. '/jdtls-workspace/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t'),
@@ -87,16 +58,15 @@ local config = {
 	-- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
 	settings = {
 		java = {
-			home = project_config.java_home,
-			-- home = "C:/Program Files/RedHat/java-1.8.0-openjdk-1.8.0.282-1",
-      project = {
-      outputPath = project_config.output_dir,
-      --   outputPath = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/webapps/WEB-INF/classes",
-      sourcePaths = project_config.source_dir,
-      --   sourcePaths = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/src",
-			referencedLibraries = vim.split(vim.fn.glob(project_config.referenced_libraries[1], 1), "\n"),
-			-- 	referencedLibraries = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/webapps/WEB-INF/lib/*.jar"
-      },
+--			home = project_config.java_home,
+--			-- home = "C:/Program Files/RedHat/java-1.8.0-openjdk-1.8.0.282-1",
+--      project = {
+--      outputPath = project_config.output_dir,
+--      --   outputPath = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/webapps/WEB-INF/classes",
+--      sourcePaths = project_config.source_dir,
+--      --   sourcePaths = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/src",
+--			referencedLibraries = vim.split(vim.fn.glob(project_config.referenced_libraries[1], 1), "\n"),
+--			-- 	referencedLibraries = "C:/Users/vincelli/jdtls-workspace/hcdwp_switch/webapps/WEB-INF/lib/*.jar"
 			eclipse = {
 				downloadSources = true,
 			},
@@ -151,6 +121,7 @@ local config = {
 				insertLocation = true,
 			},
 		},
+
 		completion = {
 			favoriteStaticMembers = {
 				"org.hamcrest.MatcherAssert.assertThat",
@@ -175,7 +146,8 @@ local config = {
 				staticStarThreshold = 9999,
 			},
 		},
-	},
+  },
+
 	init_options = {
 		workspace = vim.fn.stdpath('data') .. '/jdtls-workspace/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t'),
 		bundles = bundles,
@@ -185,10 +157,6 @@ local config = {
 	capabilities = require('cmp_nvim_lsp').default_capabilities(),
 	flags = {
 		allow_incremental_sync = true,
-	},
-	init_options = {
-		-- References the bundles defined above to support Debugging and Unit Testing
-		bundles = bundles
 	},
 	-- Add handlers for status and progress messages
 	handlers = {
